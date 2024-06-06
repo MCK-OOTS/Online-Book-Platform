@@ -1,0 +1,28 @@
+server:
+  port: 8081
+
+
+#DB
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/book_platform?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: root
+    thymeleaf:
+      prefix: classpath:/templates/
+      suffix: .html
+      cache: false
+      mode: HTML
+
+
+
+  #spring data jpa 설정
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+

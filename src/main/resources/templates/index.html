@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link rel="stylesheet" type="text/css" href="/CSS/index.css">
+
+</head>
+<body>
+    <a href = "/member/signup"> 회원가입</a>
+    <a href = "/member/login">로그인</a>
+    <a href="/member/logout">로그아웃</a>
+    <button onclick="writeReq()">글쓰기</button>
+    <span th:text="${session.LoginID}"></span>
+
+    <br><br>
+
+    <table>
+        <tr>
+            <td>게시글 번호</td>
+            <td>글 제목</td>
+            <td>작성자</td>
+
+            <td>책 제목</td>
+            <td>책 저자</td>
+            <td>조회수</td>
+        </tr>
+        <tr th:each="board: ${boardList}">
+            <td th:text="${board.boardId}"></td>&nbsp;
+            <td><a th:href="@{|/board/${board.boardId}|}" th:text="${board.boardTitle}"></a></td> <!-- 게시물 ID로 요청-->&nbsp;
+            <td th:text="${board.boardWriter}"></td>&nbsp;
+
+            <td th:text="${board.bookTitle}"></td>&nbsp;
+            <td th:text="${board.bookWriter}"></td>&nbsp;
+            <td th:text="${board.boardHits}"></td>&nbsp;
+        </tr>
+
+    </table>
+</body>
+<script>
+    const writeReq = () => {
+        location.href="/board/write";
+    }
+
+</script>
+</html>

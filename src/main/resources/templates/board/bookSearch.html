@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>도서검색</title>
+</head>
+<body>
+<div class="col-md-12">
+    <h1>도서 검색</h1>
+    <div class="book-search">
+        <form th:action="@{/board/bookSearch}" method="post">
+            <input type="text" th:value="${keyword}" name="keyword" placeholder="제목, 저자, 출판사">
+            <button th:text="검색" type="submit"></button>
+        </form>
+    </div>
+    <div>
+        <table class="table">
+            <tbody>
+            <tr th:each="bookDto : ${bookList}" onclick="selectElement(this)" style="cursor : pointer;">
+                <td><img th:src="@{${bookDto.bookImage}}" width="100" height="150"/></td>
+                <td th:text="${bookDto.bookTitle}">title</td>
+                <td th:text="${bookDto.bookWriter}">author</td>
+                <td th:text="${bookDto.bookPublisher}">publisher</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+
+    const selectElement = (selectedElement) => {
+        addDataToForm(selectedElement);
+        window.close();
+    }
+
+
+
+    function addDataToForm(ele) {
+        console.log('addDateToForm' + ele);
+
+        let elements = ele.getElementsByTagName("td");
+        let data = {
+            image: elements[0].querySelector('img').getAttribute('src'),
+            title: elements[1].innerText,
+            author: elements[2].innerText,
+            publisher: elements[3].innerText
+        };
+
+        window.opener.document.getElementById("add_imageURL").value = data.image;
+        window.opener.document.getElementById("add_title").value = data.title;
+        window.opener.document.getElementById("add_author").value = data.author;
+        window.opener.document.getElementById("add_publisher").value = data.author;
+    }
+</script>
+</body>
+</html>

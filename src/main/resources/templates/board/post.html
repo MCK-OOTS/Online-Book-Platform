@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/CSS/post.css">
+
+</head>
+<body>
+<table>
+    <tr>
+        <td th:text="${board.boardId}"></td>
+    </tr>
+    <tr>
+        <td><img th:src="@{${board.bookImage}}" width="150" height="150" alt="이미지 없음"></td>
+    </tr>
+    <tr>
+        <th>글 제목</th>
+        <td th:text="${board.boardTitle}"></td>
+    </tr>
+    <tr>
+        <th>작성자</th>
+        <td th:text="${board.boardWriter}"></td>
+    </tr>
+    <tr>
+        <th>책 제목</th>
+        <td th:text="${board.bookTitle}"></td>
+    </tr>
+    <tr>
+        <th>저자</th>
+        <td th:text="${board.bookWriter}"></td>
+    </tr>
+    <tr>
+        <th>출판사</th>
+        <td th:text="${board.bookPublisher}"></td>
+    </tr>
+    <tr>
+        <th>판메유무</th>
+        <td th:switch="${board.bookState}">
+            <span th:case="1">판매 불가능</span>
+            <span th:case="2">판매 중 /
+                <span th:text="${board.bookPrice} + 원"></span>
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <th>내용</th>
+        <td th:text="${board.boardContents}">
+        </td>
+    </tr>
+</table>
+<button onclick="paymentPopup()">구매하기</button>
+<button onclick="listReq()">목록</button>
+<button onclick="updateReq()">수정</button>
+<button onclick="deleteReq()">삭제</button>
+</body>
+
+<script th:inline="javascript">
+    const updateReq = () => {
+        const postId = [[${board.boardId}]];
+        const boardWriterID = [[${board.boardWriter}]];
+        const currentID = [[${session.LoginID}]];
+
+        if (boardWriterID === currentID) {
+            location.href = "/board/update/" + postId;
+        } else {
+            alert("게시글 수정은 글 작성자만 할 수 있습니다.");
+        }
+    }
+
+    const listReq = () => {
+        location.href = "/";
+    }
+
+    const deleteReq = () => {
+        const postId = [[${board.boardId}]];
+        const boardWriterID = [[${board.boardWriter}]];
+        const currentID = [[${session.LoginID}]];
+
+        if (boardWriterID === currentID) {
+            if(confirm("정말 삭제하시겠습니까?") == true){
+                location.href = "/board/delete/" + postId;
+            }else{
+                return false;
+            }
+
+        } else {
+            alert("게시글 삭제는 글 작성자만 할 수 있습니다.");
+        }
+    }
+
+    const paymentPopup = () => {
+
+        const state = [[${board.bookState}]];
+
+        if(state == 1){
+            alert("판매 중인 상품이 아닙니다.");
+        }
+        else{
+            const bookImage = [[${board.bookImage}]];
+            const bookTitle = [[${board.bookTitle}]];
+            const bookPrice = [[${board.bookPrice}]];
+
+            const popup = window.open("/payment/paymentPopup", "결제 팝업창", "width=500, height=500");
+
+            popup.onload = () => {
+                popup.postMessage({
+                    bookImage,
+                    bookTitle,
+                    bookPrice
+                }, "*");
+            }
+        }
+
+
+    }
+
+</script>
+
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>글 작성</title>
+    <link rel="stylesheet" type="text/css" href="/CSS/write.css">
+</head>
+<script>
+    const state = (value) => {
+        const bookPriceInput = document.getElementById("priceGroup");
+        if (value === "1") {
+            bookPriceInput.style.display = "none";
+        } else {
+            bookPriceInput.style.display = "block";
+        }
+    }
+
+    const bookSearchPopup = () => {
+        const popup = window.open("도서검색 팝업창", "", "width=500, height=500");
+        popup.location.href="searchPopup";
+    }
+</script>
+<body>
+<div class="container">
+    <h1>후기 작성</h1>
+    <button onclick="bookSearchPopup()">책 정보 검색</button><br>
+    <form action="/board/writeFinish" method="post">
+        <input type="hidden"  name="bookImage" id="add_imageURL">
+
+        <div class="form-group">
+            <label>책 제목</label>
+            <input type="text" name="bookTitle" id="add_title" placeholder="책 제목을 입력해주세요.">
+        </div>
+        <div class="form-group">
+            <label>저자</label>
+            <input type="text" name="bookWriter" id="add_author" placeholder="저자를 입력해주세요.">
+        </div>
+        <div class="form-group">
+            <label>출판사</label>
+            <input type="text" name="bookPublisher" id="add_publisher" placeholder="출판사를 입력해주세요.">
+        </div>
+        <div class="form-group inline">
+            <label>판매 가능 여부</label>
+            <label for="bookState1">
+                <input type="radio" name="bookState" id="bookState1" value="2" onchange="state(this.value)" >
+                <span>가능</span>
+            </label>
+            <label for="bookState2">
+                <input type="radio" name="bookState" id="bookState2" value="1" onchange="state(this.value)" checked>
+                <span>불가능</span>
+            </label>
+        </div>
+        <div class="form-group" id="priceGroup">
+            <label>가격</label>
+            <input type="number" name="bookPrice" id="inputPrice" placeholder="가격을 입력해주세요.">
+        </div>
+        <div class="form-group inline">
+            <input type="hidden" th:value="${session.LoginID}" name="boardWriter">
+        </div>
+        <div class="form-group">
+            <label for="boardTitle">글 제목</label>
+            <input type="text" name="boardTitle" id="boardTitle" placeholder="글 제목을 입력해주세요.">
+        </div>
+        <div class="form-group">
+            <label for="boardContents">글 내용</label>
+            <textarea name="boardContents" id="boardContents" cols="30" rows="10"></textarea>
+        </div>
+        <input type="submit" value="작성">
+    </form>
+</div>
+</body>
+</html>
