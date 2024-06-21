@@ -81,10 +81,11 @@ dependencies{
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' //타임리프 의존성 추가
 	//implementation 'org.springframework.boot:spring-boot-starter-security'
 	//implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa' //JPA 의존성 추가
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.json:json:20230227'
-	implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
+	implementation 'org.json:json:20230227' //json의존성
+	implementation 'com.github.iamport:iamport-rest-client-java:0.2.21' //포트원 API
+	implementation 'net.nurigo:sdk:4.3.0' //coolsms 의존성 추가
 	allprojects {
 		repositories {
 			maven { url 'https://jitpack.io' }

@@ -1,6 +1,8 @@
 package com.react.practice.controller;
 
+import com.react.practice.dto.BoardDTO;
 import com.react.practice.dto.PaymentDTO;
+import com.react.practice.entity.BoardEntity;
 import com.react.practice.entity.BuyerEntity;
 import com.react.practice.service.OrderService;
 import com.siot.IamportRestClient.IamportClient;
@@ -11,6 +13,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -20,21 +23,20 @@ import java.io.IOException;
 @Getter
 public class PaymentController {
 
-
-
     private final OrderService orderService;
-
     private final IamportClient iamportClient;
 
 
+
     //apiket, apiSecret으로 객체생성
+    //orderService와 smsController 메소드 호출을 위해 주입
     @Autowired
     public PaymentController(OrderService orderService){
         this.orderService = orderService;
         this.iamportClient = new IamportClient("2432830381011165", "w2oi7Kp2XK7sqBjTVC67LfgmQbgUEVaruq197psIstZ6wDqcnQtacg0YL0wM6bT86PAPU5hjZvK8jXTQ");
     }
 
-    //결제 팝업창 매핑
+    //결제 팝업창
     @GetMapping("payment/paymentPopup")
     public String paymentPopup(){
 
@@ -58,6 +60,11 @@ public class PaymentController {
         orderService.save_buyerInfo(request);
     }
 
+    @PostMapping("payment/updateState/{boardId}")
+    @ResponseBody
+    public void boardInfo_Update(@PathVariable("boardId")Long boardId){
+        System.out.println("boardId = "+boardId);
+    }
 
 
 }

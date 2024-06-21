@@ -19,6 +19,7 @@ public class MemberController {
     private final MemberService memberService;
 
 
+
     //회원가입 폼
     @GetMapping("/member/signup")
     public String singupFrom(){

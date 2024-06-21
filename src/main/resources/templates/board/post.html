@@ -97,6 +97,7 @@
             alert("판매 중인 상품이 아닙니다.");
         }
         else{
+            const boardId = [[${board.boardId}]];
             const bookImage = [[${board.bookImage}]];
             const bookTitle = [[${board.bookTitle}]];
             const bookPrice = [[${board.bookPrice}]];
@@ -105,6 +106,7 @@
 
             popup.onload = () => {
                 popup.postMessage({
+                    boardId,
                     bookImage,
                     bookTitle,
                     bookPrice

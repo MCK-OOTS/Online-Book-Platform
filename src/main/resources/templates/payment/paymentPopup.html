@@ -1,133 +1,131 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>결제</title>
+    <title>구매 정보 확인</title>
+
+    <!-- CSS파일 -->
+    <link rel="stylesheet" type="text/css" href="/CSS/paymentPopup.css">
 
     <!-- iamport  -->
     <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 
-    <<script
-        src="https://code.jquery.com/jquery-1.12.4.min.js"
-        integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
-        crossorigin="anonymous">
-</script>
-
-    <script>
-        window.addEventListener("message", (event) => {
-            const data = event.data;
-            document.getElementById('bookImage').src = data.bookImage;
-            document.getElementById('bookTitle').textContent = data.bookTitle;
-            document.getElementById('bookPrice').textContent = data.bookPrice;
-        });
+    <!-- Jquery cdn-->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+            integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+            crossorigin="anonymous">
     </script>
 
+    <script>
+        let orderData = {};
+
+        window.addEventListener("message", (event) => {
+            orderData = event.data;
+            document.getElementById('bookImage').src = orderData.bookImage;
+            document.getElementById('bookTitle').textContent = orderData.bookTitle;
+            document.getElementById('bookPrice').textContent = orderData.bookPrice + '원';
+        });
+
+        const kakaoPay = () => {
+            const merchPrice = parseInt(document.getElementById('bookPrice').textContent.replace('원', '').trim()); // '원' 제거 후 정수 변환
+            const merch = document.getElementById('bookTitle').textContent;
+            const merchant_uid = "0" + new Date().getTime();
+
+            const buyerName = document.getElementById('buyerName').value;
+            const buyerAddr = document.getElementById('buyerAddr').value;
+            const buyerTel = document.getElementById('buyerTel').value;
+
+            IMP.init("imp78422856");
+
+            IMP.request_pay({
+                pg: "kakaopay",
+                pay_method: "card",
+                amount: merchPrice,
+                name: merch,
+                merchant_uid: merchant_uid,
+                buyer_name: buyerName,
+                buyer_tel: buyerTel,
+                buyer_addr: buyerAddr,
+            }, function(response) {
+                // 결제 사후 검증
+                if (response.success) {
+                    let verifyData = {
+                        imp_uid: response.imp_uid,
+                        merchant_uid: response.merchant_uid,
+                        amount: response.paid_amount
+                    };
+                    $.ajax({
+                        url: '/payment/verify',
+                        method: 'POST',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify(verifyData)
+                    }).done(function(data) {
+                        if (parseInt(response.paid_amount) === data.response.amount) {
+                            alert("결제가 완료되었습니다.(결제검증 완료)");
+                            saveInfo(response, orderData);
+                        } else {
+                            alert("결제가 실패하였습니다.");
+                            window.close();
+                        }
+                    }).fail(function() {
+                        alert("결제 검증 요청이 실패하였습니다.");
+                        window.close();
+                    });
+                } else {
+                    alert("결제가 실패되었습니다 : " + response.error_msg);
+                    window.close();
+                }
+            });
+        };
+
+        function saveInfo(response, orderData) {
+            // 주문 정보 저장
+            var buyerInfo = {
+                merchant_uid: response.merchant_uid,
+                userid: response.buyer_name,
+                pay_method: response.pay_method,
+                name: response.name,
+                amount: response.paid_amount,
+                phone: response.buyer_tel,
+                addr: response.buyer_addr
+            };
+
+            const boardId = orderData.boardId;
+            console.log("boardID:"+boardId);
+
+            $.ajax({
+                url: '/payment/buyerInfo_save',
+                method: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(buyerInfo)
+            }).done(function() {
+               window.close();
+            }).fail(function() {
+                alert("구매자 정보 저장 요청이 실패하였습니다.");
+                window.close();
+            });
+        }
+    </script>
 </head>
 <body>
-<div>
-    <table border="1">
-        <thead><h3>상품정보</h3></thead>
-        <td>
-            <img id="bookImage" src="" width="100" height="100">
-        </td>
-        <td id="bookTitle"></td>
-        <td id="bookPrice"></td>
-    </table>
+<div class="container">
+    <div class="product-info">
+        <img id="bookImage" src="" width="100" height="100" alt="Book Image">
+        <div class="product-details">
+            <h4 id="bookTitle">Book Title</h4>
+            <p id="bookPrice">Book Price</p>
+        </div>
+    </div>
+
+    <div class="shipping-info">
+        <h3>배송지 정보</h3>
+        이름 : <input type="text" id="buyerName"><br>
+        주소 : <input type="text" placeholder="상세주소까지 입력해주세요. ex)동,호수" id="buyerAddr"><br>
+        휴대전화 : <input type="tel" id="buyerTel" placeholder="ex)00011112222"><br>
+    </div>
+
+    <button onclick="kakaoPay()">카카오페이 결제</button>
 </div>
-
-
-<div>
-    <h3>배송지 정보</h3>
-    이름 : <input type="text" id="buyerName"><br>
-    주소 : <input type="text" placeholder="상세주소까지 입력해주세요. ex)동,호수" width="100" id="buyerAddr"><br>
-    휴대전화 : <input type="tel" id="buyerTel" placeholder="ex)00011112222"><br>
-</div>
-
-<button onclick="kakaoPay()">카카오페이 결제</button>
 </body>
 </html>
-<script>
-
-    IMP.init("imp78422856");
-
-
-
-    const kakaoPay = () => {
-
-        const merchPrice = document.getElementById('bookPrice').textContent;
-        const merch = document.getElementById('bookTitle').textContent;
-        const merchant_uid = "0" + new Date().getTime();
-
-        const buyerName = document.getElementById('buyerName').value;
-        const buyerAddr = document.getElementById('buyerAddr').value;
-        const buyerTel = document.getElementById('buyerTel').value;
-
-
-
-        IMP.request_pay({
-            pg: "kakaopay",
-            pay_method: "card",
-            amount: merchPrice,
-            name: merch,
-            merchant_uid: merchant_uid,
-            buyer_name : buyerName,
-            buyer_tel: buyerTel,
-            buyer_addr: buyerAddr,
-
-        },  function(response){
-            //결제 사후 검증
-            if(response.success){
-                let data = {
-                    imp_uid: response.imp_uid,
-                    merchant_uid: response.merchant_uid,
-                    amount: response.paid_amount
-                }
-                $.ajax({
-                    url: '/payment/verify',
-                    method: 'POST',
-                    dataType: 'json',
-                    contentType: 'application/json; charset=utf-8',
-                    data: JSON.stringify(data)
-                }).done(function (data) {
-
-                    if(response.paid_amount == data.response.amount){
-                        alert("결제가 완료되었습니다.(결제검증 완료)");
-                        saveInfo(response);
-                    }else{
-                        console.log("ajax 실패");
-                        alert("결제가 실패하였습니다.");
-                        window.close();
-                    }
-
-                });
-
-            }else{
-                alert("결제가 실패되었습니다 : " + response.err_msg);
-                window.close();
-            }
-        });
-
-    }
-
-    function saveInfo(response) {
-        //주문 정보 저장
-        var buyerInfo = {
-            "merchant_uid": response.merchant_uid,
-            "userid": response.buyer_name,
-            "pay_method": response.pay_method,
-            "name": response.name,
-            "amount": response.paid_amount,
-            "phone": response.buyer_tel,
-            "addr": response.buyer_addr
-        }
-        $.ajax({
-            url: '/payment/buyerInfo_save',
-            method: 'POST',
-            contentType: 'application/json; charset=utf-8',
-            data: JSON.stringify(buyerInfo)
-        }).done(function(){
-            window.close();
-        });
-    }
-
-</script>
