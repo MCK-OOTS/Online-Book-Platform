@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.List;
 
 @Controller
-@RequiredArgsConstructor
+@RequiredArgsConstructor//생성자 생성
 public class HomeController {
     private final BoardService boardService;
 
-    //기본 페이지 요청 메소드
+    //기본 페이지 요청
     @GetMapping("/")
     public String index(Model model){
 

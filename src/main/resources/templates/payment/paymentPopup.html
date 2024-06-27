@@ -19,6 +19,7 @@
     <script>
         let orderData = {};
 
+        //post.html에서 가져온 상품정보
         window.addEventListener("message", (event) => {
             orderData = event.data;
             document.getElementById('bookImage').src = orderData.bookImage;
@@ -26,6 +27,8 @@
             document.getElementById('bookPrice').textContent = orderData.bookPrice + '원';
         });
 
+
+        //포트원API로 카카오페이 결제
         const kakaoPay = () => {
             const merchPrice = parseInt(document.getElementById('bookPrice').textContent.replace('원', '').trim()); // '원' 제거 후 정수 변환
             const merch = document.getElementById('bookTitle').textContent;
@@ -100,6 +103,7 @@
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify(buyerInfo)
             }).done(function() {
+
                window.close();
             }).fail(function() {
                 alert("구매자 정보 저장 요청이 실패하였습니다.");

@@ -12,10 +12,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 //회원 관리 컨트롤러
 @Controller
-@RequiredArgsConstructor
+@RequiredArgsConstructor//생성자 생성
 
 public class MemberController {
 
+    //생성자 의존성 주입
     private final MemberService memberService;
 
 
@@ -29,20 +30,21 @@ public class MemberController {
     //회원가입 아이디 중복 확인
     @PostMapping("/member/signup")
         public String signup(@ModelAttribute MemberDTO memberDTO, RedirectAttributes redirect) {
-            boolean exist = memberService.MemberIdCheck(memberDTO.getMemberId());
-            if(exist){;
+            boolean exist = memberService.MemberIdCheck(memberDTO.getMemberId()); //아이디 중복체크
+            if(exist){//중복
                 return "member/idDuplicate";
             }
             memberService.signup(memberDTO);
             return "member/signSuccess";
         }
 
-
-    @GetMapping("/member/login")//로그인 폼
+    //로그인 폼
+    @GetMapping("/member/login")
     public String loginForm(){
         return "member/login";
     }
 
+    //로그인하는 경우, 사용자 아이디로 세션 값 부여
     @PostMapping("member/index")//
     public String login(@ModelAttribute MemberDTO memberDTO, HttpSession session){
         MemberDTO result = memberService.login(memberDTO);
@@ -59,6 +61,7 @@ public class MemberController {
         return "error";
     }*/
 
+    //로그아웃, 세션 만료
     @GetMapping("/member/logout")
     public String logout(HttpSession session){
         session.invalidate();

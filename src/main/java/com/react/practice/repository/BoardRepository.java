@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
+    //Spring Data JPA
     //게시판 조회수 업데이트
 
     //Entity기준 업데이트 쿼리

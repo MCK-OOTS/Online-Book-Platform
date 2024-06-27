@@ -56,6 +56,8 @@
 </body>
 
 <script th:inline="javascript">
+
+    //업데이트
     const updateReq = () => {
         const postId = [[${board.boardId}]];
         const boardWriterID = [[${board.boardWriter}]];
@@ -68,10 +70,12 @@
         }
     }
 
+    //목록, 메인화면 이동
     const listReq = () => {
         location.href = "/";
     }
 
+    //게시글 삭제
     const deleteReq = () => {
         const postId = [[${board.boardId}]];
         const boardWriterID = [[${board.boardWriter}]];
@@ -89,6 +93,7 @@
         }
     }
 
+    //결제 창
     const paymentPopup = () => {
 
         const state = [[${board.bookState}]];
@@ -97,6 +102,7 @@
             alert("판매 중인 상품이 아닙니다.");
         }
         else{
+            //결제시 상품정보를 데이터를 결제창에 전달
             const boardId = [[${board.boardId}]];
             const bookImage = [[${board.bookImage}]];
             const bookTitle = [[${board.bookTitle}]];

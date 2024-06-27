@@ -6,12 +6,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
-@Getter
-@Setter
-@Table(name="board")
+@Entity //Entity
+@Getter //Get 메소드
+@Setter //Set 메소드
+@Table(name="board") //테이블 명
 public class BoardEntity {
-    @Id
+    @Id //pk
     @GeneratedValue(strategy = GenerationType.IDENTITY)//auto_increment
     private Long boardId;
 

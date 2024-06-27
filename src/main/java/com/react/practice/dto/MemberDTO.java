@@ -5,11 +5,11 @@ import lombok.*;
 
 
 
-@Getter
-@Setter
+@Getter //Get 매소드
+@Setter // Set 메소드
 @NoArgsConstructor //기본생성자
 @AllArgsConstructor //필드값 생성자
-@ToString
+@ToString //toString 메소드
 public class MemberDTO {
     private String memberName;
     private String memberId;

@@ -9,10 +9,10 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name="buyerInfo")
+@Table(name="buyerInfo") //테이블명
 public class BuyerEntity {
 
-    @Id
+    @Id//pk
     @Column(unique = true)
     private String merchant_uid;
 

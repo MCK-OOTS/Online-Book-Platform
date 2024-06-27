@@ -19,10 +19,12 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @Controller
-@RequiredArgsConstructor
+@RequiredArgsConstructor//생성자 생성
 @Getter
 public class PaymentController {
 
+
+    //생성자 의조성 주입
     private final OrderService orderService;
     private final IamportClient iamportClient;
 
@@ -58,12 +60,6 @@ public class PaymentController {
     public void save_buyerInfo(@RequestBody BuyerEntity request){
         System.out.println("buyerInfo Controller");
         orderService.save_buyerInfo(request);
-    }
-
-    @PostMapping("payment/updateState/{boardId}")
-    @ResponseBody
-    public void boardInfo_Update(@PathVariable("boardId")Long boardId){
-        System.out.println("boardId = "+boardId);
     }
 
 

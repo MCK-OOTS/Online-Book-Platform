@@ -12,10 +12,13 @@ import java.lang.reflect.Member;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor //생성자 생성
 public class MemberService {
+
+    //생성자 의존성 주입
     private final MemberRepository memberRepository;
 
+    //회원가입 정보 저장
     public void signup(MemberDTO memberDTO) {
         //DTO > Entity
         MemberEntity memberEntity = MemberEntity.toMemberEntity(memberDTO);
@@ -24,6 +27,7 @@ public class MemberService {
 
     //로그인 기능
     public MemberDTO login(MemberDTO memberDTO) {
+        //아이디 확인
         Optional<MemberEntity> byMemberId = memberRepository.findByMemberId(memberDTO.getMemberId());
 
         if (byMemberId.isPresent()){

@@ -4,11 +4,11 @@ package com.react.practice.dto;
 import com.react.practice.entity.BoardEntity;
 import lombok.*;
 
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter //Get메소드
+@Setter //Set메소드
+@ToString //toString 메소드
+@NoArgsConstructor //기본생성자
+@AllArgsConstructor // 모든 필드를 매개변수로 갖는 생성자
 public class BoardDTO {
 
      //작성글 정보

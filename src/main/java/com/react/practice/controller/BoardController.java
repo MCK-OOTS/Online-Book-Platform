@@ -29,20 +29,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequiredArgsConstructor
+@RequiredArgsConstructor //생성자 생성
 @Setter
 
 public class BoardController {
 
-    //생성자주입
+    //의존성 주입
     private final BoardService boardService;
 
-    //API ID, SECRET
+    //네이버 검색 API를 사용하기 위해 API ID, SECRET을 통한 의존성 주입
     private final String NAVER_API_ID = "oJ2q0QKw3V9rXWHOMBM5";
     private final String NAVER_API_SECRET = "38dakeeB2E";
 
 
-    @GetMapping("board/write") //글 작성 폼
+    //글 작성 폼
+    @GetMapping("board/write")
     public String write(HttpServletRequest request) {
         HttpSession session = request.getSession();
 
@@ -55,14 +56,17 @@ public class BoardController {
 
     }
 
-    @PostMapping("board/writeFinish")//글 작성 완료
+    //글 작성 완료
+    @PostMapping("board/writeFinish")
     public String index(@ModelAttribute BoardDTO boardDTO) {
             boardService.save(boardDTO);
             return "board/writeSuccess";
 
     }
 
-    @GetMapping("board/{boardId}")//게시글 조회
+    //게시글 조회
+    //게시판 번호를 url로 가져옴
+    @GetMapping("board/{boardId}")
     public String findById(@PathVariable("boardId") Long boardId, Model model, HttpServletRequest request) {
 
         HttpSession session = request.getSession();
@@ -88,24 +92,13 @@ public class BoardController {
 
     }
 
-
+    //api를 활용한 검색 페이지로 이동
     @GetMapping("board/searchPopup")
     public String popup(){
 
         return "board/bookSearch";
     }
 
-    /*@GetMapping("board/bookSearch")
-    public String iframe(){
-
-        return "board/bookSearch";
-    }
-
-    @GetMapping("board/bookSearch")
-    public String bookSearch(Model model){
-
-        return "board/bookSearch";
-    }*/
 
 
 
@@ -142,13 +135,14 @@ public class BoardController {
             }
             br.close();
 
+            //요청값 중 'itmes'의 데이터를 jsonArray로 가져오기
             JSONObject jsObject = new JSONObject(response.toString());
             JSONArray jsonArray = (JSONArray) jsObject.get("items");
 
             List<BoardDTO> bookList = new ArrayList<>();
 
 
-
+            //검색정보를 저장
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
 
@@ -156,6 +150,7 @@ public class BoardController {
                 String bookWriter = obj.getString("author");
                 String bookImage = obj.getString("image");
                 String bookPublisher = obj.getString("publisher");
+
 
                 BoardDTO bookDTO = new BoardDTO();
                 bookDTO.setBookImage(bookImage);
@@ -171,6 +166,7 @@ public class BoardController {
             return "board/bookSearch";
     }
 
+    //업데이트 폼으로 전달
     @GetMapping("board/update/{boardId}")
     public String updateForm(@PathVariable("boardId") Long boardId, Model model){
         BoardDTO boardDTO = boardService.findById(boardId);
@@ -179,6 +175,7 @@ public class BoardController {
         return "board/postUpdate";
     }
 
+    //업데이트 완료
     @PostMapping("board/updateFinish")
     public String postUpdate(@ModelAttribute BoardDTO boardDTO, Model model){
 
@@ -188,6 +185,7 @@ public class BoardController {
     }
 
 
+    //게시글 삭제
     @GetMapping("board/delete/{boardId}")
     public String postDelete(@PathVariable ("boardId") Long boardId){
         boardService.postDelete(boardId);

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BuyerRepository extends JpaRepository<BuyerEntity, String> {
-
+//Spring Data JPA
 }
